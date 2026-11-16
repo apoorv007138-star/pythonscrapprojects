@@ -90,8 +90,8 @@ def main():
             except ValueError as error:
                 print(f"Could not complete that action: {error}")
 
-            except (OSError, EOFError) as error:
-                print(f"Input or file error: {error}")
+            except OSError as error:
+                print(f"File error: {error}")
 
     except (KeyboardInterrupt, EOFError):
         print("\nExiting BookVault...")
