@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap">
+<title>MemeCheck – rug-risk checklist and trade calculator</title>
+<style>
+:root{--bg:#8fd8ff;--onbg:#1b1b3a;--ink:#1b1b3a;--card:#fffdf6;--muted:#55557a;--yel:#ffc93c;--mint:#38d39f;--pink:#ff7eb6;--red:#ff5c5c;--gt:#087a50;--rt:#c0233f;
+--cloud:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='60'%3E%3Cpath d='M20 52a18 18 0 0 1 4-36 24 24 0 0 1 46-6 22 22 0 0 1 38 14 16 16 0 0 1-2 28z' fill='white'/%3E%3C/svg%3E");
+color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#2b2d7a;--onbg:#fff;--cloud:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='60'%3E%3Cpath d='M20 52a18 18 0 0 1 4-36 24 24 0 0 1 46-6 22 22 0 0 1 38 14 16 16 0 0 1-2 28z' fill='%23474aa8'/%3E%3C/svg%3E")}}
+:root[data-theme="dark"]{--bg:#2b2d7a;--onbg:#fff;--cloud:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='60'%3E%3Cpath d='M20 52a18 18 0 0 1 4-36 24 24 0 0 1 46-6 22 22 0 0 1 38 14 16 16 0 0 1-2 28z' fill='%23474aa8'/%3E%3C/svg%3E")}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;color:var(--ink);font:17px/1.5 "Fredoka","Trebuchet MS",system-ui,sans-serif;background:var(--cloud) no-repeat 5% 80px,var(--cloud) no-repeat 94% 210px,var(--bg)}
+.wrap{max-width:820px;margin:0 auto;padding:20px 16px 48px}
+.hd{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.mascot{flex:none}
+@media (prefers-reduced-motion:no-preference){.mascot{animation:bob 2.4s ease-in-out infinite}.btn-t:active{transition:transform .05s}}
+@keyframes bob{50%{transform:translateY(-6px) rotate(-3deg)}}
+h1{font-size:clamp(34px,7vw,52px);margin:0;line-height:1;color:#fff;-webkit-text-stroke:2px var(--ink);paint-order:stroke fill;text-shadow:4px 4px 0 var(--ink);letter-spacing:.01em}
+h2{font-size:22px;margin:0 0 10px}
+.sub{color:var(--onbg);margin:4px 0 0;font-weight:500}
+.warn{position:relative;background:var(--yel);border:3px solid var(--ink);border-radius:18px;padding:12px 14px 12px 58px;font-size:15px;margin:18px 0;box-shadow:5px 5px 0 var(--ink)}
+.warn::before{content:"!";position:absolute;left:12px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;background:var(--red);border:3px solid var(--ink);color:#fff;font-weight:700;font-size:22px;display:grid;place-items:center}
+.tabs{display:flex;gap:10px;margin-bottom:16px}
+.tabs button{flex:1;font:600 17px "Fredoka","Trebuchet MS",sans-serif;padding:10px;border-radius:16px;border:3px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer;box-shadow:4px 4px 0 var(--ink)}
+.tabs button[aria-selected="true"]{background:var(--pink);transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+.card{background:var(--card);border:3px solid var(--ink);border-radius:22px;padding:18px;margin-bottom:18px;box-shadow:6px 6px 0 var(--ink)}
+.chk{font-weight:400;margin:0;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:2px dashed #c9c3a8;cursor:pointer;font-size:16px}
+.chk:last-child{border:0}
+.chk input{appearance:none;-webkit-appearance:none;width:28px;height:28px;margin:2px 0 0;flex:none;border:3px solid var(--ink);border-radius:9px;background:#fff;cursor:pointer;box-shadow:2px 2px 0 var(--ink)}
+.chk input:checked{background:var(--mint) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7' fill='none' stroke='%231b1b3a' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/80% no-repeat}
+.chk b{display:block;font-weight:600}.chk span{color:var(--muted);font-size:14px}
+.w{margin-left:auto;background:var(--yel);border:2px solid var(--ink);border-radius:99px;padding:0 9px;font-size:13px;font-weight:600;white-space:nowrap}
+.num{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+label{font-size:14px;font-weight:600;color:var(--ink);display:block;margin-bottom:4px}
+input[type=number]{width:100%;font:600 17px "Fredoka","Trebuchet MS",sans-serif;padding:9px 12px;border:3px solid var(--ink);border-radius:14px;background:#fff;color:var(--ink)}
+input:focus-visible,button:focus-visible{outline:4px solid var(--pink);outline-offset:2px}
+.score{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.big{font-size:68px;font-weight:700;line-height:1;text-shadow:3px 3px 0 var(--yel)}
+.pill{display:inline-block;padding:3px 14px;border-radius:99px;font-weight:600;font-size:16px;color:var(--ink);border:3px solid var(--ink)}
+.meter{height:24px;border-radius:99px;background:#fff;border:3px solid var(--ink);overflow:hidden;margin:14px 0 8px}
+.meter i{display:block;height:100%;border-right:3px solid var(--ink);background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.4) 0 8px,transparent 8px 16px);transition:width .25s}
+.res{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:6px}
+.res div{border:3px solid var(--ink);border-radius:16px;padding:10px 12px;box-shadow:3px 3px 0 var(--ink)}
+.res div:nth-child(6n+1){background:#fff0b8}.res div:nth-child(6n+2){background:#c9f5e3}.res div:nth-child(6n+3){background:#ffd9ea}
+.res div:nth-child(6n+4){background:#d3ecff}.res div:nth-child(6n+5){background:#ffe3c2}.res div:nth-child(6n){background:#e6dcff}
+.res small{display:block;color:var(--muted);font-size:13px;font-weight:500}.res strong{font-size:24px}
+.up{color:var(--gt)}.dn{color:var(--rt)}
+.tbl{width:100%;border-collapse:collapse;font-size:15px;margin-top:6px}
+.tbl th{background:var(--yel);border:2px solid var(--ink);padding:6px}
+.tbl td{padding:7px 6px;border-bottom:2px dashed #c9c3a8;text-align:right;font-weight:500}
+.tbl th{text-align:right}.tbl th:first-child,.tbl td:first-child{text-align:left}
+.scroll{overflow-x:auto}
+.note{font-size:14px;color:var(--muted)}
+[hidden]{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hd"><svg class="mascot" width="72" height="72" viewBox="0 0 80 80" role="img" aria-label="Friendly coin mascot"><circle cx="40" cy="44" r="30" fill="#ffc93c" stroke="#1b1b3a" stroke-width="4"/><circle cx="40" cy="44" r="21" fill="none" stroke="#e59f00" stroke-width="3"/><circle cx="30" cy="40" r="6" fill="#fff" stroke="#1b1b3a" stroke-width="3"/><circle cx="50" cy="40" r="6" fill="#fff" stroke="#1b1b3a" stroke-width="3"/><circle cx="31.5" cy="41" r="2.5" fill="#1b1b3a"/><circle cx="51.5" cy="41" r="2.5" fill="#1b1b3a"/><path d="M30 54q10 9 20 0" fill="none" stroke="#1b1b3a" stroke-width="4" stroke-linecap="round"/><path d="M26 12l4 9M54 12l-4 9M40 8v9" stroke="#1b1b3a" stroke-width="4" stroke-linecap="round"/></svg><div><h1>MemeCheck</h1><p class="sub">A rug-risk checklist and a trade calculator for meme coins.</p></div></div>
+<div class="warn"><b>Read this first:</b> most meme coins go to zero, and no checklist can prove a coin is safe. This tool only helps you spot common red flags and see the real numbers. It is not financial advice. Never put in money you can’t afford to lose.</div>
+
+<div class="tabs" role="tablist">
+<button role="tab" id="t1" aria-selected="true" aria-controls="p1">Rug-risk checklist</button>
+<button role="tab" id="t2" aria-selected="false" aria-controls="p2">Trade calculator</button>
+</div>
+
+<section id="p1" role="tabpanel" aria-labelledby="t1">
+<div class="card">
+<div class="score"><div class="big" id="sc">0</div>
+<div><span class="pill" id="band">High risk</span><div class="note" id="bandtxt"></div></div></div>
+<div class="meter"><i id="mt" style="width:0"></i></div>
+<div class="note">Score out of 100. Tick what you have actually verified yourself, using an explorer such as Solscan or Etherscan.</div>
+</div>
+<div class="card">
+<h2>Token checks</h2>
+<div id="list"></div>
+<div class="num" style="margin-top:14px">
+<div><label for="top10">Top 10 holders own (% of supply, not counting the pool)</label><input id="top10" type="number" min="0" max="100" placeholder="e.g. 25"></div>
+<div><label for="dev">Creator wallet owns (% of supply)</label><input id="dev" type="number" min="0" max="100" placeholder="e.g. 4"></div>
+</div>
+</div>
+</section>
+
+<section id="p2" role="tabpanel" aria-labelledby="t2" hidden>
+<div class="card">
+<h2>Your trade</h2>
+<div class="num">
+<div><label for="amt">You put in (USD)</label><input id="amt" type="number" min="0" value="100"></div>
+<div><label for="emc">Market cap when you buy (USD)</label><input id="emc" type="number" min="0" value="200000"></div>
+<div><label for="tmc">Market cap when you sell (USD)</label><input id="tmc" type="number" min="0" value="2000000"></div>
+<div><label for="liq">Pool liquidity at entry (USD)</label><input id="liq" type="number" min="0" value="40000"></div>
+<div><label for="fee">Trading fee each way (%)</label><input id="fee" type="number" min="0" step="0.1" value="1"></div>
+<div><label for="flat">Network + priority fees per trade (USD)</label><input id="flat" type="number" min="0" step="0.1" value="0.5"></div>
+</div>
+<p class="note">Liquidity matters: a small pool means your own buy and sell move the price against you. It’s assumed to grow in proportion to market cap.</p>
+</div>
+<div class="card">
+<h2>Result</h2>
+<div class="res" id="res"></div>
+</div>
+<div class="card">
+<h2>What each price multiple would give you</h2>
+<div class="scroll"><table class="tbl" id="tbl"></table></div>
+<p class="note">Rows use your inputs above, with costs and slippage included.</p>
+</div>
+</section>
+</div>
+
+<script>
+(function(){
+var ITEMS=[
+["Mint authority is revoked",20,"Nobody can create new tokens and dilute you."],
+["Freeze authority is revoked",15,"Nobody can freeze your tokens or stop you selling."],
+["Liquidity is locked or burned (or still on the launchpad curve)",15,"The creator can’t pull the pool out from under you."],
+["I tested a small sell and it worked",10,"Some scam tokens let you buy but block selling."],
+["I checked the address from an official source, not just the ticker",5,"Copycat coins reuse popular names."],
+["It has a real community with history, not only new accounts",5,"Look for activity from before the launch."],
+["Volume and holders look organic, not one sudden spike",5,"Sudden volume from a few wallets is often wash trading."]];
+var $=function(i){return document.getElementById(i)};
+var list=$("list");
+ITEMS.forEach(function(it,i){var d=document.createElement("label");d.className="chk";
+d.innerHTML='<input type="checkbox" data-i="'+i+'"><div><b>'+it[0]+'</b><span>'+it[2]+'</span></div><div class="w">+'+it[1]+'</div>';list.appendChild(d)});
+
+function lin(v,good,bad,max){if(v===""||isNaN(v))return 0;v=+v;if(v<=good)return max;if(v>=bad)return 0;return max*(bad-v)/(bad-good)}
+function score(){
+var s=0;[].forEach.call(list.querySelectorAll("input"),function(c){if(c.checked)s+=ITEMS[c.dataset.i][1]});
+s+=lin($("top10").value,20,60,15)+lin($("dev").value,3,20,10);
+s=Math.round(s);$("sc").textContent=s;$("mt").style.width=s+"%";
+var b,t,col;
+if(s>=80){b="Fewer red flags";col="var(--mint)";t="Still no guarantee. Price can fall to zero with no rug at all."}
+else if(s>=50){b="Risky";col="var(--yel)";t="Several checks are missing. Verify more before putting money in."}
+else{b="High risk";col="var(--red)";t="Many red flags or unverified checks. Most coins like this lose money."}
+$("band").textContent=b;$("band").style.background=col;$("mt").style.backgroundColor=col;$("bandtxt").textContent=t}
+$("p1").addEventListener("input",score);score();
+
+function usd(n){var a=Math.abs(n);return (n<0?"-":"")+"$"+(a>=1e6?(a/1e6).toFixed(2)+"M":a>=1e4?Math.round(a).toLocaleString():a.toFixed(2))}
+function net(P,target){
+var f=P.fee/100,L=P.liq;
+var sIn=L>0?P.amt/(L+P.amt):0;
+var frac=(P.amt*(1-f)*(1-sIn))/P.emc;
+var gross=frac*target;
+var Lx=L>0?L*target/P.emc:0,sOut=Lx>0?gross/(Lx+gross):0;
+return {frac:frac,gross:gross,net:gross*(1-sOut)*(1-f)-2*P.flat,sIn:sIn,sOut:sOut}}
+function calc(){
+var P={amt:+$("amt").value,emc:+$("emc").value,tmc:+$("tmc").value,liq:+$("liq").value,fee:+$("fee").value,flat:+$("flat").value};
+if(!(P.amt>0&&P.emc>0&&P.tmc>0)){$("res").innerHTML="<p class='note'>Enter an amount and both market caps.</p>";$("tbl").innerHTML="";return}
+var r=net(P,P.tmc),profit=r.net-P.amt,mult=r.net/P.amt;
+var lo=P.emc,hi=P.emc*1000,be=lo;
+if(net(P,lo).net<P.amt){for(var i=0;i<60;i++){var m=(lo+hi)/2;if(net(P,m).net>=P.amt)hi=m;else lo=m}be=hi}
+var cls=profit>=0?"up":"dn";
+$("res").innerHTML=
+'<div><small>You’d walk away with</small><strong>'+usd(r.net)+'</strong></div>'+
+'<div><small>Profit / loss</small><strong class="'+cls+'">'+usd(profit)+'</strong></div>'+
+'<div><small>Your multiple</small><strong class="'+cls+'">'+mult.toFixed(2)+'x</strong></div>'+
+'<div><small>Break-even market cap</small><strong>'+usd(be)+'</strong></div>'+
+'<div><small>Slippage on entry / exit</small><strong>'+(r.sIn*100).toFixed(1)+'% / '+(r.sOut*100).toFixed(1)+'%</strong></div>'+
+'<div><small>Share of supply you own</small><strong>'+(r.frac*100).toPrecision(2)+'%</strong></div>';
+var h="<tr><th>Price x</th><th>Market cap</th><th>You get</th><th>Profit</th></tr>";
+[0.5,1,2,5,10,50,100].forEach(function(x){var t=P.emc*x,n=net(P,t).net,p=n-P.amt;
+h+="<tr><td>"+x+"x</td><td>"+usd(t)+"</td><td>"+usd(n)+"</td><td class='"+(p>=0?"up":"dn")+"'>"+usd(p)+"</td></tr>"});
+$("tbl").innerHTML=h}
+$("p2").addEventListener("input",calc);calc();
+
+[$("t1"),$("t2")].forEach(function(b,i){b.addEventListener("click",function(){
+[$("t1"),$("t2")].forEach(function(x,j){x.setAttribute("aria-selected",j===i)});
+$("p1").hidden=i!==0;$("p2").hidden=i!==1})});
+})();
+</script>
+</body>
+</html>
